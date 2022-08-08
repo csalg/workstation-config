@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  connection: local
+  # connection: local # If this is set to local it ignores the port for some reason
   become: true
 
   vars:
@@ -10,6 +10,10 @@
 
   # TODO: pacman -Ssyuu maybe
   tasks:
+    # - name: "Ansible | List all known variables and facts"
+    #   debug:
+    #     var: hostvars[inventory_hostname]
+
     - name: Install basic command-line tools
       community.general.pacman:
         name: "{{ item }}"
@@ -17,8 +21,6 @@
       loop:
         - tmux
         - neovim
-        - nerd-fonts-noto-sans-mono
-        - nerd-fonts-terminus
         - ncurses
         - zsh
         - htop
@@ -85,6 +87,8 @@
         executable: yay
       loop:
         - azure-cli
+        - nerd-fonts-noto-sans-mono
+        - nerd-fonts-terminus
       when: dev
   
     - name: Install dev & graphical (yay)
