@@ -1,0 +1,6 @@
+all:
+  hosts:
+    localhost:
+      port: 8022
+      ansible_port: 8022
+      ansible_user: docker
