@@ -1,0 +1,115 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    graphical: false
+    dev: false
+    personal: false
+
+  # TODO: pacman -Ssyuu maybe
+  tasks:
+    - name: Install basic command-line tools
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - tmux
+        - neovim
+        - nerd-fonts-noto-sans-mono
+        - nerd-fonts-terminus
+        - ncurses
+        - zsh
+        - htop
+        - python3
+        - python-pip
+        - taskell
+        - zsh-autosuggestions
+        - zsh-completions
+        - grep
+        - curl
+        - gnutls
+        - sudo
+        - wget
+        - which
+        - yay
+        - tree
+        - ranger
+
+    - name: Change shell
+      shell: chsh -s `which zsh`
+    
+    - name: Install ohmyzsh
+      shell: curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+
+    - name: Install zsh-autosuggestions
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: ~/.oh-my-zsh/custom/plugins
+
+
+    - name: Install graphical stuff
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - zathura
+        - thunderbird
+        - sqlite
+        - snapd
+        - slack-desktop
+        - firefox
+        - conky-i3
+        - rofi
+      when: graphical
+
+    - name: Install dev stuff
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - npm
+        - yarn
+        - nodejs-lts-gallium
+        - kubectl
+        - go
+        - alacritty
+      when: dev
+
+    # TODO: Install vs code and azure-cli using yay
+    - name: Install dev (yay)
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+        executable: yay
+      loop:
+        - azure-cli
+      when: dev
+  
+    - name: Install dev & graphical (yay)
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+        executable: yay
+      loop:
+        - visual-studio-code-bin
+      when: dev and graphical
+
+
+    - name: Install personal stuff
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - telegram-desktop
+        - shadowsocks-qt5
+        - darktable
+        - calibre
+      when: personal
+
+
+    # TODO: ssh stuff.
+    # Add personal and work keys. 
+    # Add authorized hosts
+    # Make sure ssh server is running
