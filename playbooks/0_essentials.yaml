@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: cpg_raffle
   # connection: local # If this is set to local it ignores the port for some reason
   become: true
 
@@ -30,26 +30,51 @@
         - zsh-autosuggestions
         - zsh-completions
         - grep
+        - git
         - curl
         - gnutls
+        - go
         - sudo
+        - alacritty
         - wget
         - which
-        - yay
         - tree
         - ranger
 
+    - name: Clone `yay`
+      ansible.builtin.git:
+        repo: https://aur.archlinux.org/yay-git.git
+        dest: /tmp/yay
+      become: false
+      tags:
+        - yay
+
+    # This will hang ansible for some reason
+    # EDIT: I think it's because it asks for password to install go.
+    # So maybe it won't happen again
+    # Just manually ssh into the target, cd `/tmp/yay` and
+    # run `makepkg -si`
+    # - name: Install `yay`
+    #   shell: makepkg -si
+    #   args:
+    #     chdir: /tmp/yay
+    #   become: false
+    #   tags:
+    #     - yay
+    #
     - name: Change shell
       shell: chsh -s `which zsh`
     
-    - name: Install ohmyzsh
-      shell: curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    # This also hangs because it changes shell
+    # Also it seems to work with `wget` but not `curl` for whatever reason
+    # Install manually
+    # - name: Install ohmyzsh
+    #   shell: curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 
     - name: Install zsh-autosuggestions
       ansible.builtin.git:
         repo: https://github.com/zsh-users/zsh-autosuggestions
         dest: ~/.oh-my-zsh/custom/plugins
-
 
     - name: Install graphical stuff
       community.general.pacman:
@@ -59,12 +84,26 @@
         - zathura
         - thunderbird
         - sqlite
-        - snapd
-        - slack-desktop
         - firefox
-        - conky-i3
         - rofi
       when: graphical
+
+    # Basically, installing stuff with `yay` only seems to 
+    # work if `become: no` AND the `-K` flag is set when running
+    # ansible-playbook so that the sudo password is then inserted.
+    # It's very weird.
+    - name: Install graphical stuff (yay)
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+        executable: yay
+        extra_args: --builddir /var/cache/yay
+      loop:
+        - snapd
+      when: graphical
+      tags:
+        - snapd
+      become: no
 
     - name: Install dev stuff
       community.general.pacman:
@@ -73,33 +112,37 @@
       loop:
         - npm
         - yarn
-        - nodejs-lts-gallium
         - kubectl
         - go
         - alacritty
       when: dev
 
-    # TODO: Install vs code and azure-cli using yay
-    - name: Install dev (yay)
-      community.general.pacman:
-        name: "{{ item }}"
-        state: present
-        executable: yay
-      loop:
-        - azure-cli
-        - nerd-fonts-noto-sans-mono
-        - nerd-fonts-terminus
-      when: dev
-  
-    - name: Install dev & graphical (yay)
-      community.general.pacman:
-        name: "{{ item }}"
-        state: present
-        executable: yay
-      loop:
-        - visual-studio-code-bin
-      when: dev and graphical
-
+        # TODO: Factor out installing yay, using yay to install packages
+        #  and installing oh-my-zsh into a different (manual) step after 
+        #  all of this automatic stuff is done.
+  #   - name: Install dev (yay)
+  #     community.general.pacman:
+  #       name: "{{ item }}"
+  #       state: present
+  #       executable: yay
+  #     loop:
+  #       - azure-cli
+  #       - nerd-fonts-noto-sans-mono
+  #       - nerd-fonts-terminus
+  #     when: dev
+  #     become: no
+  # 
+  #   - name: Install dev & graphical (yay)
+  #     community.general.pacman:
+  #       name: "{{ item }}"
+  #       state: present
+  #       executable: yay
+  #     loop:
+  #       - visual-studio-code-bin
+  #       - slack-desktop
+  #       - conky-i3
+  #     when: dev and graphical
+  #     become: no
 
     - name: Install personal stuff
       community.general.pacman:
