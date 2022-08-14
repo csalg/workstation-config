@@ -21,6 +21,9 @@
       loop:
         - tmux
         - neovim
+        - stow
+        - fzf
+        - ripgrep
         - ncurses
         - zsh
         - htop
@@ -40,36 +43,9 @@
         - which
         - tree
         - ranger
-
-    - name: Clone `yay`
-      ansible.builtin.git:
-        repo: https://aur.archlinux.org/yay-git.git
-        dest: /tmp/yay
-      become: false
-      tags:
-        - yay
-
-    # This will hang ansible for some reason
-    # EDIT: I think it's because it asks for password to install go.
-    # So maybe it won't happen again
-    # Just manually ssh into the target, cd `/tmp/yay` and
-    # run `makepkg -si`
-    # - name: Install `yay`
-    #   shell: makepkg -si
-    #   args:
-    #     chdir: /tmp/yay
-    #   become: false
-    #   tags:
-    #     - yay
-    #
     - name: Change shell
       shell: chsh -s `which zsh`
     
-    # This also hangs because it changes shell
-    # Also it seems to work with `wget` but not `curl` for whatever reason
-    # Install manually
-    # - name: Install ohmyzsh
-    #   shell: curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 
     - name: Install zsh-autosuggestions
       ansible.builtin.git:
@@ -86,24 +62,12 @@
         - sqlite
         - firefox
         - rofi
-      when: graphical
-
-    # Basically, installing stuff with `yay` only seems to 
-    # work if `become: no` AND the `-K` flag is set when running
-    # ansible-playbook so that the sudo password is then inserted.
-    # It's very weird.
-    - name: Install graphical stuff (yay)
-      community.general.pacman:
-        name: "{{ item }}"
-        state: present
-        executable: yay
-        extra_args: --builddir /var/cache/yay
-      loop:
-        - snapd
+        - arandr
+        - pavucontrol
+        - barrier
       when: graphical
       tags:
-        - snapd
-      become: no
+        - graphical
 
     - name: Install dev stuff
       community.general.pacman:
@@ -117,32 +81,6 @@
         - alacritty
       when: dev
 
-        # TODO: Factor out installing yay, using yay to install packages
-        #  and installing oh-my-zsh into a different (manual) step after 
-        #  all of this automatic stuff is done.
-  #   - name: Install dev (yay)
-  #     community.general.pacman:
-  #       name: "{{ item }}"
-  #       state: present
-  #       executable: yay
-  #     loop:
-  #       - azure-cli
-  #       - nerd-fonts-noto-sans-mono
-  #       - nerd-fonts-terminus
-  #     when: dev
-  #     become: no
-  # 
-  #   - name: Install dev & graphical (yay)
-  #     community.general.pacman:
-  #       name: "{{ item }}"
-  #       state: present
-  #       executable: yay
-  #     loop:
-  #       - visual-studio-code-bin
-  #       - slack-desktop
-  #       - conky-i3
-  #     when: dev and graphical
-  #     become: no
 
     - name: Install personal stuff
       community.general.pacman:

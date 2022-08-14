@@ -1,0 +1,60 @@
+# This will copy the ssh keys and then use them to clone some of my private repos to `~/.toolbox`
+---
+- hosts: cpg_raffle
+  # connection: local # If this is set to local it ignores the port for some reason
+  tasks:
+    - name: Copy ssh keys
+      ansible.builtin.copy:
+        src: "files/ssh/{{ item }}"
+        dest: "/home/{{ ansible_user }}/.ssh/{{ item }}"
+        owner: "{{ ansible_user }}"
+        mode: '0600'
+      loop:
+        - id_rsa
+        - id_rsa.pub
+
+    - name: Create `~/toolbox`
+      file:
+        path: "/home/{{ ansible_user }}/.toolbox"
+        state: directory
+        mode: 0755
+      tags:
+        - toolbox
+
+    # First time running this it won't work because
+    # github's public key is not in known_hosts or
+    # something like that
+    - name: Clone repos
+      git:
+        repo: "git@github.com:csalg/{{ item }}.git"
+        dest: "/home/{{ ansible_user }}/.toolbox/{{ item }}"
+        clone: yes
+        update: yes
+      loop:
+        - dotfiles
+        - work-wiki
+        - workstation-config
+      tags:
+        - toolbox
+
+    - name: Remove previous dotfiles
+      file:
+        path: "/home/{{ ansible_user }}/{{ item }}"
+        state: absent
+      loop:
+        - ".zshrc"
+        - ".config/i3"
+      tags:
+        - dotfiles
+
+    - name: Run `stow`
+      shell: "stow --target=/home/{{ ansible_user }} *"
+      args:
+        chdir: "/home/{{ ansible_user }}/.toolbox/dotfiles"
+      tags:
+        - dotfiles
+
+      # Remove previous dotfiles
+      # Run stow
+
+      
