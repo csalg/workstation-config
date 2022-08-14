@@ -1,9 +1,10 @@
 all:
   hosts:
     localhost:
-      port: 8022
-      ansible_port: 8022
-      ansible_user: docker
+      # port: 8022
+      # ansible_port: 8022
+      # ansible_user: docker
+      ansible_user: charlie
     cpg_raffle:
       ansible_user: charlie
       ansible_host: 192.168.0.42

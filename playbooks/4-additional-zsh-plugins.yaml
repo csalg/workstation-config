@@ -4,11 +4,14 @@
 - hosts: cpg_raffle
   tasks:
     - name: Clone `zsh-autosuggestions`
-      git:
-        repo: "https://github.com/zsh-users/{{ item }}"
-        dest: "/home/{{ ansible_user }}/.oh-my-zsh/custom/plugins/{{ item }}"
-        clone: yes
-        update: yes
+      shell: "git clone {{ item }}"
+      args:
+        chdir: "/home/{{ ansible_user }}/.oh-my-zsh/custom/plugins"
       loop:
-        - zsh-autosuggestions
-        - zsh-syntax-highlighting
+        - https://github.com/zsh-users/zsh-autosuggestions
+        - https://github.com/zsh-users/zsh-syntax-highlighting
+        - https://github.com/zsh-users/zsh-completions.git
+        - https://github.com/djui/alias-tips.git
+        - https://github.com/lukechilds/zsh-better-npm-completion
+        - https://github.com/akarzim/zsh-docker-aliases.git
+
