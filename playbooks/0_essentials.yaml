@@ -1,5 +1,5 @@
 ---
-- hosts: cpg_raffle
+- hosts: localhost
   # connection: local # If this is set to local it ignores the port for some reason
   become: true
 
@@ -19,6 +19,14 @@
         name: "{{ item }}"
         state: present
       loop:
+        - zoxide
+        - bat
+        - pcmanfm
+        - python-scikit-learn
+        - ansible
+        - flameshot # screenshot capture tool
+        - bluez-utils # cli interface for bluetooth (bluetoothcli)
+        - blueman # applet for bluetooth
         - tmux
         - neovim
         - stow
@@ -65,6 +73,8 @@
         - arandr
         - pavucontrol
         - barrier
+        - i3lock
+        - i3status
       when: graphical
       tags:
         - graphical
@@ -81,7 +91,6 @@
         - alacritty
       when: dev
 
-
     - name: Install personal stuff
       community.general.pacman:
         name: "{{ item }}"
@@ -93,8 +102,26 @@
         - calibre
       when: personal
 
+    - name: Install stuff using `pip`
+      pip:
+        name: "{{ item }}"
+      loop:
+        - jupyter
+        - numpy
+        - matplotlib
+        - seaborn
+        - flask
+      tags:
+        - pip
 
-    # TODO: ssh stuff.
-    # Add personal and work keys. 
-    # Add authorized hosts
-    # Make sure ssh server is running
+    - name: Enable services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        masked: no
+      loop:
+        - systemd-networkd
+        - iwd
+        - sshd
+      tags:
+        - systemd
