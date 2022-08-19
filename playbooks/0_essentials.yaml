@@ -19,6 +19,8 @@
         name: "{{ item }}"
         state: present
       loop:
+        - pacmd # reconfigure pulseaudio during runtime
+        - pulseaudio
         - zoxide
         - bat
         - pcmanfm
@@ -89,7 +91,19 @@
         - kubectl
         - go
         - alacritty
+        - go
       when: dev
+
+    - name: Install go tooling
+      shell: "{{ item }}"
+      become: no
+      when: dev
+      loop:
+        - "curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin"
+        - "go install github.com/vektra/mockery/v2@latest"
+        - "go install gotest.tools/gotestsum@latest"
+      tags:
+        - gotooling
 
     - name: Install personal stuff
       community.general.pacman:
@@ -123,5 +137,19 @@
         - systemd-networkd
         - iwd
         - sshd
+        - bluetooth
       tags:
         - systemd
+
+    - name: Audio (Thinkpad X1 Carbon 10 gen)
+      shell: "pacmd load-module module-alsa-source device=hw:0,6"
+      # After running this need to open `alsamixer` and unmute
+
+    - name: Markserv
+      community.general.npm:
+        name: markserv
+        global: yes
+      tags:
+        - markserv
+      when: dev
+

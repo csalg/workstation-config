@@ -9,7 +9,7 @@ all:
       ansible_user: charlie
       ansible_host: 192.168.0.42
     krosna:
-      ansible_user: docker
+      ansible_user: root
       ansible_host: krosna.xyz
       ansible_ssh_port: 8222
       ansible_port: 8222
