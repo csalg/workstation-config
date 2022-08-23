@@ -1,6 +1,7 @@
 # This will copy the ssh keys and then use them to clone some of my private repos to `~/.toolbox`
 ---
-- hosts: cpg_raffle
+- hosts: localhost
+  ignore_errors: true
   # connection: local # If this is set to local it ignores the port for some reason
   tasks:
     - name: Copy ssh keys
@@ -47,12 +48,12 @@
       tags:
         - dotfiles
 
-    - name: Run `stow`
-      shell: "stow --target=/home/{{ ansible_user }} *"
-      args:
-        chdir: "/home/{{ ansible_user }}/.toolbox/dotfiles"
-      tags:
-        - dotfiles
+    # - name: Run `stow`
+    #   shell: "stow --target=/home/{{ ansible_user }} *"
+    #   args:
+    #     chdir: "/home/{{ ansible_user }}/.toolbox/dotfiles"
+    #   tags:
+    #     - dotfiles
 
       # Remove previous dotfiles
       # Run stow

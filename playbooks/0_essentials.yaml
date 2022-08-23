@@ -2,11 +2,13 @@
 - hosts: localhost
   # connection: local # If this is set to local it ignores the port for some reason
   become: true
+  ignore_errors: yes
 
   vars:
     graphical: false
     dev: false
     personal: false
+    x1gen10: false
 
   # TODO: pacman -Ssyuu maybe
   tasks:
@@ -53,9 +55,9 @@
         - which
         - tree
         - ranger
+    
     - name: Change shell
       shell: chsh -s `which zsh`
-    
 
     - name: Install zsh-autosuggestions
       ansible.builtin.git:
@@ -143,6 +145,7 @@
 
     - name: Audio (Thinkpad X1 Carbon 10 gen)
       shell: "pacmd load-module module-alsa-source device=hw:0,6"
+      when: x1gen10
       # After running this need to open `alsamixer` and unmute
 
     - name: Markserv
@@ -151,5 +154,17 @@
         global: yes
       tags:
         - markserv
+      become: no
       when: dev
+
+    - name: redshift
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - redshift
+      when: graphical
+      tags:
+        - redshift
+
 
