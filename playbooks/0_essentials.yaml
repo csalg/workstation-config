@@ -130,6 +130,7 @@
         - matplotlib
         - seaborn
         - flask
+        - tabulate # Needed for `food`
       tags:
         - pip
 
