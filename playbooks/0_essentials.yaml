@@ -94,7 +94,10 @@
         - go
         - alacritty
         - go
+        - pgcli
       when: dev
+      tags:
+        - dev
 
     - name: Install go tooling
       shell: "{{ item }}"
