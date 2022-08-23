@@ -1,0 +1,21 @@
+---
+- hosts: flammel
+  # connection: local # If this is set to local it ignores the port for some reason
+  become: true
+  ignore_errors: yes
+  tasks:
+    - name: Install syncthing
+      community.general.pacman:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - syncthing
+
+    - name: Enable service
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: "started"
+        masked: no
+      loop:
+        - "syncthing@{{  ansible_user  }}.service"

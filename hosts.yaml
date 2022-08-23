@@ -8,6 +8,9 @@ all:
     cpg_raffle:
       ansible_user: charlie
       ansible_host: 192.168.0.42
+    flammel:
+      ansible_user: cgu
+      ansible_host: 192.168.0.20
     krosna:
       ansible_user: root
       ansible_host: krosna.xyz

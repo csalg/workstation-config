@@ -1,6 +1,6 @@
 # This will copy the ssh keys and then use them to clone some of my private repos to `~/.toolbox`
 ---
-- hosts: localhost
+- hosts: flammel
   ignore_errors: true
   # connection: local # If this is set to local it ignores the port for some reason
   tasks:

@@ -1,7 +1,7 @@
 
 # This clones additional zsh plugins to the `oh-my-zsh` custom plugins directory
 ---
-- hosts: cpg_raffle
+- hosts: flammel
   tasks:
     - name: Clone `zsh-autosuggestions`
       shell: "git clone {{ item }}"
