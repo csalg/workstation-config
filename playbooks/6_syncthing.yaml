@@ -1,6 +1,5 @@
 ---
-- hosts: flammel
-  # connection: local # If this is set to local it ignores the port for some reason
+- hosts: localhost
   become: true
   ignore_errors: yes
   tasks:
