@@ -3,10 +3,10 @@
 - hosts: flammel
   tasks:
 
-    - name: Remove nvim config
-      file:
-        path: "/home/{{ ansible_user }}/.config/nvim"
-        state: absent
+    # - name: Remove nvim config
+    #   file:
+    #     path: "/home/{{ ansible_user }}/.config/nvim"
+    #     state: absent
 
     - name: Clone AstroVim
       git:
