@@ -1,0 +1,13 @@
+
+---
+- hosts: localhost
+  tasks:
+    - name: Clone AstroVim
+      git:
+        repo: "https://github.com/AstroNvim/AstroNvim"
+        dest: "/home/{{ ansible_user }}/.config/nvim"
+        clone: yes
+        update: yes
+
+  # After this, run `nvim +PackerSync`
+  # and follow the instructions in the repo README

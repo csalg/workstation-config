@@ -3,7 +3,7 @@
 ---
 - hosts: flammel
   tasks:
-    - name: Clone `zsh-autosuggestions`
+    - name: Clone zsh plugins
       shell: "git clone {{ item }}"
       args:
         chdir: "/home/{{ ansible_user }}/.oh-my-zsh/custom/plugins"
