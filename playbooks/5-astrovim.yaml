@@ -17,3 +17,5 @@
 
   # After this, run `nvim +PackerSync`
   # and follow the instructions in the repo README
+
+  # TODO: `user` config should live in `dotfiles`, so re-run stow after this so it's linked again
