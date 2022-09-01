@@ -1,5 +1,5 @@
 ---
-- hosts: flammel
+- hosts: localhost
   # connection: local # If this is set to local it ignores the port for some reason
   become: true
   ignore_errors: yes
@@ -21,6 +21,7 @@
         name: "{{ item }}"
         state: present
       loop:
+        - docker
         - pacmd # reconfigure pulseaudio during runtime
         - pulseaudio
         - zoxide
@@ -138,14 +139,29 @@
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: yes
+        state: started
         masked: no
       loop:
+        - docker
         - systemd-networkd
         - iwd
         - sshd
         - bluetooth
       tags:
         - systemd
+
+    - name: "Add {{ ansible_user }} to docker group"
+      user: 
+        name: "{{ ansible_user }}"
+        shell: "/bin/bash"
+        groups:
+          - "{{ ansible_user }}"
+          - docker
+          - wheel
+        append: yes
+      tags:
+        - docker
+
 
     - name: Audio (Thinkpad X1 Carbon 10 gen)
       shell: "pacmd load-module module-alsa-source device=hw:0,6"
