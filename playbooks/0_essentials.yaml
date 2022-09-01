@@ -23,6 +23,7 @@
       loop:
         - docker
         - pacmd # reconfigure pulseaudio during runtime
+        - fd
         - pulseaudio
         - zoxide
         - bat
