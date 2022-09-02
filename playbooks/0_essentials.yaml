@@ -71,6 +71,7 @@
         name: "{{ item }}"
         state: present
       loop:
+        - libreoffice
         - zathura
         - thunderbird
         - sqlite
