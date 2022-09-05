@@ -23,5 +23,5 @@ sh install.sh
 ### Install AUR packages
 This is error-prone using Ansible because there's a lot of asking for user input.
 ```
-yay -S snapd azure-cli nerd-fonts-noto-sans-mono nerd-fonts-terminus visual-studio-code-bin slack-desktop conky-i3
+yay -S snapd azure-cli nerd-fonts-noto-sans-mono nerd-fonts-terminus visual-studio-code-bin slack-desktop conky-i3 dia
 ```
