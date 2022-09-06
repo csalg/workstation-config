@@ -1,5 +1,5 @@
 ---
-- hosts: cpg_raffle
+- hosts: localhost
   # connection: local # If this is set to local it ignores the port for some reason
   tasks:
     - name: Clone AstroVim
@@ -44,6 +44,15 @@
         - source-api
         - utils-ng
         - wiki
+
+    - name: Install xvfb - needed for running the tests in `utils-ng`
+      community.general.pacman:
+        name: xorg-server-xvfb
+        state: present
+      become: yes
+      tags:
+        - xvfb
+      
     #
     # - name: Remove previous dotfiles
     #   file:
