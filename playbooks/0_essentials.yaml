@@ -188,5 +188,13 @@
       when: graphical
       tags:
         - redshift
-
-
+          # i think this is not needed: just use CUPS
+    # - name: hardware
+    #   when: hardware
+    #   tags:
+    #     -hardware
+    #   community.general.pacman:
+    #     name: "{{ item }}"
+    #     state: present
+    #   loop:
+    #     - hplib # needed for HP 1022 
