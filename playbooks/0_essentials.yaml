@@ -82,6 +82,7 @@
         - barrier
         - i3lock
         - i3status
+        - xclip
       when: graphical
       tags:
         - graphical
