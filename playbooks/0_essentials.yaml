@@ -21,6 +21,7 @@
         name: "{{ item }}"
         state: present
       loop:
+        - github-cli
         - jq
         - man-db
         - man-pages
