@@ -21,6 +21,7 @@
         name: "{{ item }}"
         state: present
       loop:
+        - jq
         - man-db
         - man-pages
         - docker
@@ -58,7 +59,7 @@
         - which
         - tree
         - ranger
-    
+
     - name: Generate search db for manual pages
       shell: mandb
 
@@ -159,7 +160,7 @@
         - systemd
 
     - name: "Add {{ ansible_user }} to docker group"
-      user: 
+      user:
         name: "{{ ansible_user }}"
         shell: "/bin/bash"
         groups:
@@ -169,7 +170,6 @@
         append: yes
       tags:
         - docker
-
 
     - name: Audio (Thinkpad X1 Carbon 10 gen)
       shell: "pacmd load-module module-alsa-source device=hw:0,6"
@@ -194,7 +194,7 @@
       when: graphical
       tags:
         - redshift
-          # i think this is not needed: just use CUPS
+    # i think this is not needed: just use CUPS
     # - name: hardware
     #   when: hardware
     #   tags:
@@ -203,4 +203,4 @@
     #     name: "{{ item }}"
     #     state: present
     #   loop:
-    #     - hplib # needed for HP 1022 
+    #     - hplib # needed for HP 1022

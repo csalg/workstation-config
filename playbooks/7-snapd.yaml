@@ -1,0 +1,40 @@
+
+---
+- hosts: localhost
+  become: yes
+  vars:
+    install_snapd: no
+  # connection: local # If this is set to local it ignores the port for some reason
+  tasks:
+    - name: Clone snapd
+      when: install_snapd
+      git:
+        repo: "https://aur.archlinux.org/snapd.git"
+        dest: "/tmp/snapd"
+        clone: yes
+        update: yes
+      become: no
+
+    - name: Install snapd
+      when: install_snapd
+      shell: makepkg -si --noconfirm
+      args:
+        chdir: "/tmp/snapd"
+      become: no
+
+    - name: Enable service
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: "started"
+        masked: no
+      loop:
+        - "snapd.socket"
+
+    - name: Create symlink to enable classic support
+      shell: ln -s /var/lib/snapd/snap /snap
+      
+    - name: Install packages
+      shell: "snap install {{ item }}"
+      loop:
+        - "datagrip --classic"

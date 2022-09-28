@@ -21,9 +21,10 @@
     - name: Clone repos
       git:
         repo: "git@github.com:raffle-ai/{{ item }}.git"
-        dest: "/home/{{ ansible_user }}/workrepos/{{ item }}"
+        dest: "/home/{{ ansible_user }}/workrepos/{{ item }}/.git"
         clone: yes
         update: yes
+        bare: yes
       loop:
         - am-api
         - amcm
@@ -44,6 +45,8 @@
         - source-api
         - utils-ng
         - wiki
+      tags:
+        - rafflerepos
 
     - name: Install xvfb - needed for running the tests in `utils-ng`
       community.general.pacman:
