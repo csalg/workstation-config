@@ -195,13 +195,12 @@
       when: graphical
       tags:
         - redshift
-    # i think this is not needed: just use CUPS
-    # - name: hardware
-    #   when: hardware
-    #   tags:
-    #     -hardware
-    #   community.general.pacman:
-    #     name: "{{ item }}"
-    #     state: present
-    #   loop:
-    #     - hplib # needed for HP 1022
+
+    - name: Install nvm
+      ansible.builtin.shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh" 
+      become: no
+      tags:
+        - nvm
