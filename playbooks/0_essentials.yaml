@@ -22,6 +22,8 @@
         state: present
       loop:
         - at
+        - zip
+        - unzip
         - github-cli
         - jq
         - man-db
@@ -90,6 +92,7 @@
         - i3lock
         - i3status
         - xclip
+        - xarchiver
       when: graphical
       tags:
         - graphical
